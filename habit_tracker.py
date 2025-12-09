@@ -88,21 +88,27 @@ class HabitTracker:
                 break
         
         # Calculate longest streak
-        longest_streak = 1
-        temp_streak = 1
-        
-        for i in range(1, len(completions)):
-            prev_date = datetime.strptime(completions[i-1], "%Y-%m-%d").date()
-            curr_date = datetime.strptime(completions[i], "%Y-%m-%d").date()
+        if len(completions) == 0:
+            longest_streak = 0
+        else:
+            longest_streak = 1
+            temp_streak = 1
             
-            if (curr_date - prev_date).days == 1:
-                temp_streak += 1
-                longest_streak = max(longest_streak, temp_streak)
-            else:
-                temp_streak = 1
+            for i in range(1, len(completions)):
+                prev_date = datetime.strptime(completions[i-1], "%Y-%m-%d").date()
+                curr_date = datetime.strptime(completions[i], "%Y-%m-%d").date()
+                
+                if (curr_date - prev_date).days == 1:
+                    temp_streak += 1
+                    longest_streak = max(longest_streak, temp_streak)
+                else:
+                    temp_streak = 1
+            
+            # Compare with current streak
+            longest_streak = max(longest_streak, current_streak)
         
         habit["current_streak"] = current_streak
-        habit["longest_streak"] = max(longest_streak, current_streak)
+        habit["longest_streak"] = longest_streak
     
     def delete_habit(self, name: str) -> bool:
         """Delete a habit"""
